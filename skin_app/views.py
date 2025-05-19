@@ -13,25 +13,35 @@ def home(request):
 def predict(request):
     """Handle image upload and prediction"""
     if request.method == 'POST' and request.FILES.get('skin_image'):
-        # Save the uploaded image
-        skin_image = SkinImage(image=request.FILES['skin_image'])
-        skin_image.save()
-        
-        # Get the file path
-        image_path = os.path.join(settings.MEDIA_ROOT, skin_image.image.name)
-        
-        # Make prediction
-        disease_name, confidence = predict_disease(image_path)
-        
-        # Update the model with prediction results
-        skin_image.prediction = disease_name
-        skin_image.confidence = confidence
-        skin_image.save()
-        
-        # Redirect to results page
-        return redirect('result', image_id=skin_image.id)
+        try:
+            skin_image = SkinImage(image=request.FILES['skin_image'])
+            skin_image.save()
+            
+            image_path = os.path.join(settings.MEDIA_ROOT, skin_image.image.name)
+            
+            print(f"Image path: {image_path}")
+            print(f"File exists: {os.path.exists(image_path)}")
+            
+            disease_name, confidence = predict_disease(image_path)
+            
+            print(f"Prediction result: {disease_name}, confidence: {confidence}")
+            
+            skin_image.prediction = disease_name
+            skin_image.confidence = confidence
+            skin_image.save()
+            
+            return redirect('result', image_id=skin_image.id)
+        except Exception as e:
+            import traceback
+            print(f"Prediction error: {str(e)}")
+            print(traceback.format_exc())
+            
+            if 'skin_image' in locals():
+                skin_image.prediction = "error"
+                skin_image.confidence = 0
+                skin_image.save()
+                return redirect('result', image_id=skin_image.id)
     
-    # If something went wrong, redirect back to home
     return redirect('home')
 
 
