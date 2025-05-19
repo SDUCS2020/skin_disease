@@ -1,0 +1,91 @@
+{% extends 'skin_app/base.html' %}
+
+{% block content %}
+<div class="card">
+    <div class="upload-container">
+        <h1>Анализ кожных заболеваний с помощью ИИ</h1>
+        <p>Загрузите фотографию кожного поражения для анализа с использованием модели глубокого обучения Attention U-Net</p>
+        
+        <form method="post" action="{% url 'predict' %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="upload-area">
+                <div class="upload-icon">📷</div>
+                <p>Перетащите изображение сюда или нажмите для выбора файла</p>
+                <input type="file" name="skin_image" id="id_skin_image" accept="image/*" class="hidden-input" required>
+                <p id="file-name" class="file-name">Файл не выбран</p>
+            </div>
+            
+            <button type="submit" class="btn" id="submit-btn" style="display: none;">Анализировать</button>
+        </form>
+    </div>
+</div>
+
+<div class="card">
+    <h2>Как работает классификатор кожных заболеваний</h2>
+    
+    <div class="steps-container">
+        <div class="step">
+            <div class="step-number">1</div>
+            <div class="step-content">
+                <h3 class="step-title">Загрузка изображения</h3>
+                <p>Сделайте четкую фотографию кожного поражения при хорошем освещении и загрузите её через форму.</p>
+            </div>
+        </div>
+        
+        <div class="step">
+            <div class="step-number">2</div>
+            <div class="step-content">
+                <h3 class="step-title">Анализ с помощью ИИ</h3>
+                <p>Наша система использует передовую модель Attention U-Net для анализа изображения и определения возможного заболевания.</p>
+            </div>
+        </div>
+        
+        <div class="step">
+            <div class="step-number">3</div>
+            <div class="step-content">
+                <h3 class="step-title">Получение результатов</h3>
+                <p>Получите мгновенный предварительный диагноз с указанием вероятного заболевания и уровня достоверности.</p>
+            </div>
+        </div>
+        
+        <div class="step">
+            <div class="step-number">4</div>
+            <div class="step-content">
+                <h3 class="step-title">Рекомендации</h3>
+                <p>На основе выявленного заболевания система предоставит рекомендации по дальнейшим действиям.</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="alert alert-warning">
+        <strong>Важное примечание:</strong> Данная система предназначена только для информационных целей и не заменяет профессиональную медицинскую консультацию. 
+        При наличии любых проблем с кожей обязательно обратитесь к дерматологу для правильного диагноза и лечения.
+    </div>
+</div>
+
+<div class="card">
+    <h2>Типы кожных заболеваний, которые может распознать система</h2>
+    
+    <div class="two-columns">
+        <div class="column">
+            <ul class="recommendation-list">
+                <li class="recommendation-item">Экзема (Eczema)</li>
+                <li class="recommendation-item">Меланома (Melanoma)</li>
+                <li class="recommendation-item">Атопический дерматит (Atopic Dermatitis)</li>
+                <li class="recommendation-item">Базальноклеточная карцинома (Basal Cell Carcinoma)</li>
+                <li class="recommendation-item">Меланоцитарные невусы (Melanocytic Nevi)</li>
+            </ul>
+        </div>
+        
+        <div class="column">
+            <ul class="recommendation-list">
+                <li class="recommendation-item">Доброкачественные кератозы (Benign Keratosis-like Lesions)</li>
+                <li class="recommendation-item">Псориаз и лишай (Psoriasis, Lichen Planus)</li>
+                <li class="recommendation-item">Себорейный кератоз (Seborrheic Keratoses)</li>
+                <li class="recommendation-item">Грибковые инфекции (Tinea, Ringworm, Candidiasis)</li>
+                <li class="recommendation-item">Вирусные инфекции кожи (Warts, Molluscum)</li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

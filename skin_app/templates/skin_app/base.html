@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Классификатор кожных заболеваний</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #3f51b5;
+            --primary-light: #757de8;
+            --primary-dark: #002984;
+            --secondary-color: #f44336;
+            --secondary-light: #ff7961;
+            --secondary-dark: #ba000d;
+            --text-on-primary: #ffffff;
+            --text-on-secondary: #ffffff;
+            --background-color: #f5f5f5;
+            --surface-color: #ffffff;
+            --text-primary: #212121;
+            --text-secondary: #757575;
+            --border-radius: 4px;
+            --spacing-unit: 8px;
+            --shadow-1: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+            --shadow-2: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+            --shadow-3: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Roboto', sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background-color: var(--background-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 var(--spacing-unit);
+            flex: 1;
+        }
+        
+        header {
+            background-color: var(--primary-color);
+            color: var(--text-on-primary);
+            padding: calc(var(--spacing-unit) * 2) 0;
+            box-shadow: var(--shadow-1);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 500;
+            text-decoration: none;
+            color: var(--text-on-primary);
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo-icon {
+            margin-right: calc(var(--spacing-unit) * 1.5);
+            font-size: 1.7rem;
+        }
+        
+        main {
+            padding: calc(var(--spacing-unit) * 3) 0;
+            flex: 1;
+        }
+        
+        .card {
+            background-color: var(--surface-color);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-1);
+            padding: calc(var(--spacing-unit) * 3);
+            margin-bottom: calc(var(--spacing-unit) * 3);
+            transition: box-shadow 0.3s ease;
+        }
+        
+        .card:hover {
+            box-shadow: var(--shadow-2);
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: calc(var(--spacing-unit) * 1.5) calc(var(--spacing-unit) * 3);
+            background-color: var(--primary-color);
+            color: var(--text-on-primary);
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            text-align: center;
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: background-color 0.3s, transform 0.2s, box-shadow 0.3s;
+            box-shadow: var(--shadow-1);
+        }
+        
+        .btn:hover {
+            background-color: var(--primary-light);
+            box-shadow: var(--shadow-2);
+        }
+        
+        .btn:active {
+            background-color: var(--primary-dark);
+            transform: translateY(1px);
+        }
+        
+        .btn-secondary {
+            background-color: var(--secondary-color);
+        }
+        
+        .btn-secondary:hover {
+            background-color: var(--secondary-light);
+        }
+        
+        .btn-secondary:active {
+            background-color: var(--secondary-dark);
+        }
+        
+        h1, h2, h3 {
+            margin-bottom: calc(var(--spacing-unit) * 2);
+            color: var(--primary-dark);
+            font-weight: 500;
+        }
+        
+        h1 {
+            font-size: 2rem;
+        }
+        
+        h2 {
+            font-size: 1.5rem;
+        }
+        
+        h3 {
+            font-size: 1.25rem;
+        }
+        
+        p {
+            margin-bottom: calc(var(--spacing-unit) * 2);
+            color: var(--text-secondary);
+        }
+        
+        footer {
+            background-color: var(--primary-dark);
+            color: var(--text-on-primary);
+            padding: calc(var(--spacing-unit) * 2) 0;
+            text-align: center;
+            margin-top: auto;
+            font-size: 0.9rem;
+        }
+        
+        .confidence {
+            display: inline-block;
+            padding: calc(var(--spacing-unit) * 0.5) calc(var(--spacing-unit) * 1);
+            border-radius: 20px;
+            font-weight: 500;
+            margin-left: calc(var(--spacing-unit) * 0.5);
+            font-size: 0.9rem;
+        }
+        
+        .high {
+            background-color: rgba(76, 175, 80, 0.2);
+            color: #2e7d32;
+        }
+        
+        .medium {
+            background-color: rgba(255, 152, 0, 0.2);
+            color: #ef6c00;
+        }
+        
+        .low {
+            background-color: rgba(244, 67, 54, 0.2);
+            color: #c62828;
+        }
+        
+        .recommendation-list {
+            list-style-type: none;
+            margin: calc(var(--spacing-unit) * 2) 0;
+        }
+        
+        .recommendation-item {
+            padding: calc(var(--spacing-unit) * 1.5) calc(var(--spacing-unit) * 2);
+            background-color: rgba(63, 81, 181, 0.05);
+            margin-bottom: calc(var(--spacing-unit) * 1);
+            border-radius: var(--border-radius);
+            display: flex;
+            align-items: center;
+            transition: background-color 0.2s;
+        }
+        
+        .recommendation-item:hover {
+            background-color: rgba(63, 81, 181, 0.1);
+        }
+        
+        .recommendation-item:before {
+            content: "•";
+            color: var(--primary-color);
+            font-weight: bold;
+            display: inline-block;
+            width: 1em;
+            margin-right: calc(var(--spacing-unit) * 1);
+        }
+        
+        .image-preview {
+            max-width: 100%;
+            height: auto;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-1);
+            margin: calc(var(--spacing-unit) * 2) 0;
+            transition: box-shadow 0.3s;
+        }
+        
+        .image-preview:hover {
+            box-shadow: var(--shadow-2);
+        }
+        
+        .upload-container {
+            text-align: center;
+            padding: calc(var(--spacing-unit) * 4) calc(var(--spacing-unit) * 2);
+        }
+        
+        .upload-area {
+            border: 2px dashed var(--primary-color);
+            border-radius: var(--border-radius);
+            padding: calc(var(--spacing-unit) * 4);
+            margin: calc(var(--spacing-unit) * 3) 0;
+            background-color: rgba(63, 81, 181, 0.03);
+            position: relative;
+            cursor: pointer;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+        
+        .upload-area:hover {
+            background-color: rgba(63, 81, 181, 0.07);
+            border-color: var(--primary-light);
+        }
+        
+        .upload-icon {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: calc(var(--spacing-unit) * 2);
+            transition: transform 0.3s;
+        }
+        
+        .upload-area:hover .upload-icon {
+            transform: scale(1.1);
+        }
+        
+        .hidden-input {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+        
+        .file-name {
+            margin-top: calc(var(--spacing-unit) * 2);
+            font-weight: 500;
+            color: var(--primary-dark);
+        }
+        
+        .two-columns {
+            display: flex;
+            flex-wrap: wrap;
+            gap: calc(var(--spacing-unit) * 3);
+        }
+        
+        .column {
+            flex: 1;
+            min-width: 300px;
+        }
+        
+        .go-back {
+            margin-top: calc(var(--spacing-unit) * 3);
+            display: inline-block;
+        }
+        
+        .alert {
+            padding: calc(var(--spacing-unit) * 2);
+            margin: calc(var(--spacing-unit) * 2) 0;
+            border-radius: var(--border-radius);
+            font-weight: 500;
+        }
+        
+        .alert-warning {
+            background-color: #fff3cd;
+            color: #856404;
+            border-left: 4px solid #ffeeba;
+        }
+        
+        .alert-info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border-left: 4px solid #bee5eb;
+        }
+        
+        .steps-container {
+            margin: calc(var(--spacing-unit) * 3) 0;
+        }
+        
+        .step {
+            display: flex;
+            margin-bottom: calc(var(--spacing-unit) * 3);
+            align-items: flex-start;
+        }
+        
+        .step-number {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            color: var(--text-on-primary);
+            font-weight: bold;
+            margin-right: calc(var(--spacing-unit) * 2);
+            flex-shrink: 0;
+        }
+        
+        .step-content {
+            flex: 1;
+        }
+        
+        .step-title {
+            margin-bottom: calc(var(--spacing-unit) * 1);
+            color: var(--primary-dark);
+            font-weight: 500;
+        }
+        
+        @media (max-width: 768px) {
+            .two-columns {
+                flex-direction: column;
+            }
+            
+            .upload-area {
+                padding: calc(var(--spacing-unit) * 2);
+            }
+            
+            h1 {
+                font-size: 1.75rem;
+            }
+            
+            h2 {
+                font-size: 1.35rem;
+            }
+            
+            h3 {
+                font-size: 1.15rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-content">
+            <a href="{% url 'home' %}" class="logo">
+                <span class="logo-icon">🔬</span>
+                <span>Классификатор кожных заболеваний</span>
+            </a>
+        </div>
+    </header>
+    
+    <main>
+        <div class="container">
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+    
+    <footer>
+        <div class="container">
+            <p>© 2025 Классификатор кожных заболеваний | Проект с использованием ИИ для диагностики кожных патологий</p>
+        </div>
+    </footer>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const fileInput = document.getElementById('id_skin_image');
+            const fileName = document.getElementById('file-name');
+            const submitBtn = document.getElementById('submit-btn');
+            
+            if (fileInput && fileName) {
+                fileInput.addEventListener('change', function() {
+                    if (fileInput.files.length > 0) {
+                        fileName.textContent = fileInput.files[0].name;
+                        if (submitBtn) {
+                            submitBtn.style.display = 'inline-block';
+                        }
+                    } else {
+                        fileName.textContent = 'Файл не выбран';
+                        if (submitBtn) {
+                            submitBtn.style.display = 'none';
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

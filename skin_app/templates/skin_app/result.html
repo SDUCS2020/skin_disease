@@ -1,0 +1,60 @@
+{% extends 'skin_app/base.html' %}
+
+{% block content %}
+<div class="card">
+    <h1>Результаты анализа</h1>
+    
+    <div class="two-columns">
+        <div class="column">
+            <h2>Загруженное изображение</h2>
+            <img src="{{ skin_image.image.url }}" alt="Загруженное изображение" class="image-preview">
+        </div>
+        
+        <div class="column">
+            <h2>Диагноз</h2>
+            {% if skin_image.prediction %}
+                <p>На основе анализа изображения, наиболее вероятным диагнозом является:</p>
+                <h3>{{ skin_image.prediction }}
+                    {% if skin_image.confidence > 80 %}
+                        <span class="confidence high">Высокая уверенность ({{ skin_image.confidence|floatformat:1 }}%)</span>
+                    {% elif skin_image.confidence > 50 %}
+                        <span class="confidence medium">Средняя уверенность ({{ skin_image.confidence|floatformat:1 }}%)</span>
+                    {% else %}
+                        <span class="confidence low">Низкая уверенность ({{ skin_image.confidence|floatformat:1 }}%)</span>
+                    {% endif %}
+                </h3>
+                
+                <div style="margin-top: 1.5rem;">
+                    <h3>Описание</h3>
+                    <p>{{ disease_info.description }}</p>
+                </div>
+            {% else %}
+                <div class="alert alert-warning">
+                    <p>Не удалось определить заболевание. Пожалуйста, загрузите другое изображение или обратитесь к дерматологу.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% if skin_image.prediction and disease_info.recommendations %}
+<div class="card">
+    <h2>Рекомендации</h2>
+    <p>На основе предполагаемого диагноза, рекомендуются следующие действия:</p>
+    
+    <ul class="recommendation-list">
+        {% for recommendation in disease_info.recommendations %}
+            <li class="recommendation-item">{{ recommendation }}</li>
+        {% endfor %}
+    </ul>
+    
+    <div class="alert alert-info">
+        <strong>Важное примечание:</strong>
+        <p>Эти рекомендации предоставляются только в информационных целях и не заменяют профессиональную медицинскую консультацию. 
+           Пожалуйста, проконсультируйтесь с дерматологом для получения точного диагноза и плана лечения.</p>
+    </div>
+</div>
+{% endif %}
+
+<a href="{% url 'home' %}" class="btn go-back">Вернуться на главную</a>
+{% endblock %}
